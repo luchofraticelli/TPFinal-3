@@ -2,6 +2,7 @@ package com.dream_team.proyecto_final_progra3.controller;
 
 import com.dream_team.proyecto_final_progra3.entity.Habitacion;
 import com.dream_team.proyecto_final_progra3.service.HabitacionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/habitaciones")
+@RequiredArgsConstructor
 public class HabitacionController {
     @Autowired
     private HabitacionService habitacionService;

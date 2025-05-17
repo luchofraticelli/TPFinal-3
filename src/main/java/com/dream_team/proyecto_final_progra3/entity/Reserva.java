@@ -2,14 +2,16 @@ package com.dream_team.proyecto_final_progra3.entity;
 
 import com.dream_team.proyecto_final_progra3.entity.enums.EstadoReserva;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "reservas")
-@Getter @Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -4,8 +4,7 @@ import com.dream_team.proyecto_final_progra3.entity.enums.EstadoHabitacion;
 import com.dream_team.proyecto_final_progra3.entity.enums.ServicioEnum;
 import com.dream_team.proyecto_final_progra3.entity.enums.TipoHabitacion;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -13,7 +12,10 @@ import java.util.Map;
 
 @Entity
 @Table(name = "habitaciones")
-@Getter @Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Habitacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

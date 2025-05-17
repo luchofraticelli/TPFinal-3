@@ -1,14 +1,16 @@
 package com.dream_team.proyecto_final_progra3.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "credenciales")
-@Getter @Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Credenciales {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

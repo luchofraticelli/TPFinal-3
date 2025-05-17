@@ -2,6 +2,7 @@ package com.dream_team.proyecto_final_progra3.controller;
 
 import com.dream_team.proyecto_final_progra3.entity.Usuario;
 import com.dream_team.proyecto_final_progra3.service.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@RequiredArgsConstructor
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;

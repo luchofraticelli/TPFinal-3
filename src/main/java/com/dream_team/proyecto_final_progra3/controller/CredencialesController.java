@@ -2,6 +2,7 @@ package com.dream_team.proyecto_final_progra3.controller;
 
 import com.dream_team.proyecto_final_progra3.entity.Credenciales;
 import com.dream_team.proyecto_final_progra3.service.CredencialesService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/credenciales")
+@RequiredArgsConstructor
 public class CredencialesController {
     @Autowired
     private CredencialesService credencialesService;

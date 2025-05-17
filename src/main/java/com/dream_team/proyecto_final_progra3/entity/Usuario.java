@@ -2,14 +2,16 @@ package com.dream_team.proyecto_final_progra3.entity;
 
 import com.dream_team.proyecto_final_progra3.entity.embeddable.Direccion;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
-@Getter @Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +32,7 @@ public class Usuario {
     @Embedded
     private Direccion direccion;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String permisos; // administrador, empleado, pasajero
 
     @Column(name = "cuenta_no_expirada")
@@ -52,4 +54,5 @@ public class Usuario {
 
     @OneToOne(mappedBy = "usuario")
     private Pasajero pasajero;
+
 }
