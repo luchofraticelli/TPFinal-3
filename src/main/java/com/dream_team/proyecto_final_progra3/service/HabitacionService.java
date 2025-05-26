@@ -1,6 +1,8 @@
 package com.dream_team.proyecto_final_progra3.service;
 
 import com.dream_team.proyecto_final_progra3.entity.Habitacion;
+import com.dream_team.proyecto_final_progra3.entity.enums.EstadoHabitacion;
+import com.dream_team.proyecto_final_progra3.entity.enums.TipoHabitacion;
 import com.dream_team.proyecto_final_progra3.repository.HabitacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,11 +35,11 @@ public class HabitacionService {
         habitacionRepository.deleteById(id);
     }
 
-    public List<Habitacion> findByEstado(String estado) {
+    public List<Habitacion> findByEstado(EstadoHabitacion estado) {
         return habitacionRepository.findByEstado(estado);
     }
 
-    public List<Habitacion> findByTipoHabitacion(String tipo) {
+    public List<Habitacion> findByTipoHabitacion(TipoHabitacion tipo) {
         return habitacionRepository.findByTipoHabitacion(tipo);
     }
 

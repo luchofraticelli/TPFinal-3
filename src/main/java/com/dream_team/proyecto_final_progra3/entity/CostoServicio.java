@@ -7,8 +7,9 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "servicios")
-@Getter @Setter
-public class Servicio {
+@Getter
+@Setter
+public class CostoServicio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,4 +19,16 @@ public class Servicio {
     private ServicioEnum nombre;
 
     private Double costo;
+
+    public Long getId() {
+        return id;
+    }
+
+    public ServicioEnum getNombre() {
+        return nombre;
+    }
+
+    public Double getCosto() {
+        return costo;
+    }
 }

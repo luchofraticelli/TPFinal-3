@@ -34,8 +34,7 @@ public class CostoHabitacionService {
         costoHabitacionRepository.deleteById(id);
     }
 
-    public CostoHabitacion findByTipoHabitacion(String tipo) {
-        TipoHabitacion tipoEnum = TipoHabitacion.valueOf(tipo.toUpperCase());
-        return costoHabitacionRepository.findByTipoHabitacion(tipoEnum);
+    public Optional<CostoHabitacion> findByTipoHabitacion(TipoHabitacion tipo) {
+        return costoHabitacionRepository.findByTipoHabitacion(tipo);
     }
 }

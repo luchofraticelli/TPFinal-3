@@ -19,4 +19,16 @@ public class CostoHabitacion {
 
     @Column(nullable = false)
     private Double costo;
+
+    public Long getId() {
+        return id;
+    }
+
+    public TipoHabitacion getTipoHabitacion() {
+        return tipoHabitacion;
+    }
+
+    public Double getCosto() {
+        return costo;
+    }
 }

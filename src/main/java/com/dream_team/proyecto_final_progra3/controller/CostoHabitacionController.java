@@ -1,6 +1,7 @@
 package com.dream_team.proyecto_final_progra3.controller;
 
 import com.dream_team.proyecto_final_progra3.entity.CostoHabitacion;
+import com.dream_team.proyecto_final_progra3.entity.enums.TipoHabitacion;
 import com.dream_team.proyecto_final_progra3.service.CostoHabitacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +29,15 @@ public class CostoHabitacionController {
 
     @GetMapping("/tipo/{tipo}")
     public ResponseEntity<CostoHabitacion> getCostoByTipoHabitacion(@PathVariable String tipo) {
-        CostoHabitacion costoHabitacion = costoHabitacionService.findByTipoHabitacion(tipo);
-        if (costoHabitacion != null) {
-            return ResponseEntity.ok(costoHabitacion);
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            TipoHabitacion tipoEnum = TipoHabitacion.valueOf(tipo.toUpperCase());
+            Optional<CostoHabitacion> costoHabitacionOpt = costoHabitacionService.findByTipoHabitacion(tipoEnum);
+            return costoHabitacionOpt
+                    .map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (IllegalArgumentException e) {
+            // Si no existe el valor en el enum
+            return ResponseEntity.badRequest().build();
         }
     }
 

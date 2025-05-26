@@ -1,5 +1,6 @@
 package com.dream_team.proyecto_final_progra3.controller;
 
+import com.dream_team.proyecto_final_progra3.dto.FacturacionDTO;
 import com.dream_team.proyecto_final_progra3.entity.Reserva;
 import com.dream_team.proyecto_final_progra3.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,5 +71,11 @@ public class ReservaController {
     public ResponseEntity<Void> deleteReserva(@PathVariable Long id) {
         reservaService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/factura")
+    public ResponseEntity<FacturacionDTO> getFactura(@PathVariable Long id) {
+        FacturacionDTO dto = reservaService.calcularFactura(id);
+        return ResponseEntity.ok(dto);
     }
 }

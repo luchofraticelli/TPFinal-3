@@ -13,7 +13,8 @@ import java.util.Map;
 
 @Entity
 @Table(name = "habitaciones")
-@Getter @Setter
+@Getter
+@Setter
 public class Habitacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +40,32 @@ public class Habitacion {
 
     @OneToMany(mappedBy = "habitacion")
     private List<Reserva> reservas;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNumeroHabitacion() {
+        return numeroHabitacion;
+    }
+
+    public Integer getCapacidad() {
+        return capacidad;
+    }
+
+    public TipoHabitacion getTipoHabitacion() {
+        return tipoHabitacion;
+    }
+
+    public EstadoHabitacion getEstado() {
+        return estado;
+    }
+
+    public Map<ServicioEnum, Boolean> getServicios() {
+        return servicios;
+    }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
 }

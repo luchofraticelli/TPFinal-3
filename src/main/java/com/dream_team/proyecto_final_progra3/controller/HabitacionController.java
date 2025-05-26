@@ -1,6 +1,8 @@
 package com.dream_team.proyecto_final_progra3.controller;
 
 import com.dream_team.proyecto_final_progra3.entity.Habitacion;
+import com.dream_team.proyecto_final_progra3.entity.enums.EstadoHabitacion;
+import com.dream_team.proyecto_final_progra3.entity.enums.TipoHabitacion;
 import com.dream_team.proyecto_final_progra3.service.HabitacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +39,12 @@ public class HabitacionController {
     }
 
     @GetMapping("/estado/{estado}")
-    public List<Habitacion> getHabitacionesByEstado(@PathVariable String estado) {
+    public List<Habitacion> getHabitacionesByEstado(@PathVariable EstadoHabitacion estado) {
         return habitacionService.findByEstado(estado);
     }
 
     @GetMapping("/tipo/{tipo}")
-    public List<Habitacion> getHabitacionesByTipo(@PathVariable String tipo) {
+    public List<Habitacion> getHabitacionesByTipo(@PathVariable TipoHabitacion tipo) {
         return habitacionService.findByTipoHabitacion(tipo);
     }
 
