@@ -2,18 +2,85 @@ package com.dream_team.proyecto_final_progra3.entity;
 
 import com.dream_team.proyecto_final_progra3.entity.enums.EstadoReserva;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "reservas")
-@Getter @Setter
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Pasajero getPasajero() {
+        return pasajero;
+    }
+
+    public void setPasajero(Pasajero pasajero) {
+        this.pasajero = pasajero;
+    }
+
+    public Empleado getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
+    }
+
+    public Habitacion getHabitacion() {
+        return habitacion;
+    }
+
+    public void setHabitacion(Habitacion habitacion) {
+        this.habitacion = habitacion;
+    }
+
+   public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(LocalDate fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public EstadoReserva getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoReserva estado) {
+        this.estado = estado;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
 
     @ManyToOne
     @JoinColumn(name = "pasajero_id", nullable = false)
@@ -22,6 +89,7 @@ public class Reserva {
     @ManyToOne
     @JoinColumn(name = "empleado_id")
     private Empleado empleado;
+
 
     @ManyToOne
     @JoinColumn(name = "habitacion_id", nullable = false)

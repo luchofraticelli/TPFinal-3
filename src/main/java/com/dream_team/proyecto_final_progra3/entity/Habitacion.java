@@ -39,4 +39,12 @@ public class Habitacion {
 
     @OneToMany(mappedBy = "habitacion")
     private List<Reserva> reservas;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

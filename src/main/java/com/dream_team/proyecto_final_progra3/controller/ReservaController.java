@@ -1,6 +1,7 @@
 package com.dream_team.proyecto_final_progra3.controller;
 
 import com.dream_team.proyecto_final_progra3.entity.Reserva;
+import com.dream_team.proyecto_final_progra3.entity.enums.EstadoReserva;
 import com.dream_team.proyecto_final_progra3.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class ReservaController {
     }
 
     @GetMapping("/estado/{estado}")
-    public List<Reserva> getReservasByEstado(@PathVariable String estado) {
+    public List<Reserva> getReservasByEstado(@PathVariable EstadoReserva estado) {
         return reservaService.findByEstado(estado);
     }
 
