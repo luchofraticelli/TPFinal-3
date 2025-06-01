@@ -13,99 +13,68 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/costos-servicio-adicional")
+@RequestMapping("/api/costo-serv-adicionales")
 public class CostoServAdicionalController {
 
+    private final CostoServAdicionalService costoService;
 
     @Autowired
-    private CostoServAdicionalService costoServAdicionalService;
-
-    @Autowired
-    private ServAdicionalService servAdicionalService;
-
-    @GetMapping
-    public ResponseEntity<List<CostoServAdicional>> listarTodos() {
-        return ResponseEntity.ok(costoServAdicionalService.findAll());
+    public CostoServAdicionalController(CostoServAdicionalService costoService) {
+        this.costoService = costoService;
     }
 
+    // 1) LISTAR TODOS → devuelve List<CostoServAdicionalDTO>
+    @GetMapping
+    public ResponseEntity<List<CostoServAdicionalDTO>> listarTodos() {
+        List<CostoServAdicionalDTO> listaDTO = costoService.findAllDTO();
+        return ResponseEntity.ok(listaDTO);
+    }
+
+    // 2) OBTENER POR ID → devuelve un CostoServAdicionalDTO o 404
     @GetMapping("/{id}")
-    public ResponseEntity<CostoServAdicional> obtenerPorId(@PathVariable Long id) {
-        return costoServAdicionalService.findById(id)
+    public ResponseEntity<CostoServAdicionalDTO> obtenerPorId(@PathVariable Long id) {
+        return costoService.findByIdDTO(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Alta con DTO y validación de fechas y solapamiento
+    // 3) CREAR NUEVO → recibe CostoServAdicionalDTO (sin id) y devuelve el DTO creado
     @PostMapping
-    public ResponseEntity<?> crear(@RequestBody CostoServAdicionalDTO dto) {
-        if (dto.getFechaDesde().isAfter(dto.getFechaHasta())) {
-            return ResponseEntity.badRequest().body("La fecha desde debe ser anterior o igual a la fecha hasta");
+    public ResponseEntity<CostoServAdicionalDTO> crear(@RequestBody CostoServAdicionalDTO dtoRequest) {
+        try {
+            CostoServAdicionalDTO dtoCreado = costoService.saveFromDTO(dtoRequest);
+            return ResponseEntity.ok(dtoCreado);
+        } catch (RuntimeException e) {
+            // Si el nombre del enum era inválido, devolvemos Bad Request
+            return ResponseEntity.badRequest().body(null);
         }
-        ServAdicional servAdicional = servAdicionalService.findById(dto.getServAdicionalId())
-                .orElseThrow(() -> new RuntimeException("Servicio adicional no encontrado"));
-
-        boolean existeSolapamiento = costoServAdicionalService.existeSolapamiento(
-                servAdicional, dto.getFechaDesde(), dto.getFechaHasta(), null);
-
-        if (existeSolapamiento) {
-            return ResponseEntity.badRequest().body("Ya existe un costo cargado en ese rango de fechas para este servicio adicional");
-        }
-
-        CostoServAdicional costo = new CostoServAdicional();
-        costo.setServAdicional(servAdicional);
-        costo.setPrecio(dto.getPrecio());
-        costo.setFechaDesde(dto.getFechaDesde());
-        costo.setFechaHasta(dto.getFechaHasta());
-
-        CostoServAdicional guardado = costoServAdicionalService.save(costo);
-        return ResponseEntity.ok(guardado);
     }
 
-    // Modificación con DTO y validación de fechas y solapamiento
+    // 4) ACTUALIZAR EXISTENTE → recibe CostoServAdicionalDTO (con id) y devuelve el DTO actualizado
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody CostoServAdicionalDTO dto) {
-        if (dto.getFechaDesde().isAfter(dto.getFechaHasta())) {
-            return ResponseEntity.badRequest().body("La fecha desde debe ser anterior o igual a la fecha hasta");
-        }
-        ServAdicional servAdicional = servAdicionalService.findById(dto.getServAdicionalId())
-                .orElseThrow(() -> new RuntimeException("Servicio adicional no encontrado"));
+    public ResponseEntity<CostoServAdicionalDTO> actualizar(
+            @PathVariable Long id,
+            @RequestBody CostoServAdicionalDTO dtoRequest) {
 
-        boolean existeSolapamiento = costoServAdicionalService.existeSolapamiento(
-                servAdicional, dto.getFechaDesde(), dto.getFechaHasta(), id);
-
-        if (existeSolapamiento) {
-            return ResponseEntity.badRequest().body("Ya existe un costo cargado en ese rango de fechas para este servicio adicional");
-        }
-
-        return costoServAdicionalService.findById(id)
-                .map(costo -> {
-                    costo.setPrecio(dto.getPrecio());
-                    costo.setFechaDesde(dto.getFechaDesde());
-                    costo.setFechaHasta(dto.getFechaHasta());
-                    costo.setServAdicional(servAdicional);
-                    return ResponseEntity.ok(costoServAdicionalService.save(costo));
+        // Primero verificamos que exista el registro
+        return costoService.findByIdDTO(id)
+                .map(existenteDTO -> {
+                    // Forzamos que el id del DTO coincida con el PathVariable
+                    dtoRequest.setId(id);
+                    try {
+                        CostoServAdicionalDTO dtoActualizado = costoService.saveFromDTO(dtoRequest);
+                        return ResponseEntity.ok(dtoActualizado);
+                    } catch (RuntimeException e) {
+                        return ResponseEntity.badRequest().<CostoServAdicionalDTO>build();
+                    }
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    // 5) ELIMINAR POR ID → devuelve 204 No Content
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        costoServAdicionalService.deleteById(id);
+        costoService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    // Consulta del costo vigente para un servicio adicional en una fecha (opcional)
-    @GetMapping("/vigente")
-    public ResponseEntity<CostoServAdicional> costoVigente(
-            @RequestParam Long servAdicionalId,
-            @RequestParam String fecha // formato yyyy-MM-dd
-    ) {
-        ServAdicional servAdicional = servAdicionalService.findById(servAdicionalId)
-                .orElseThrow(() -> new RuntimeException("Servicio adicional no encontrado"));
-        var localDate = java.time.LocalDate.parse(fecha);
-
-        return costoServAdicionalService.findVigente(servAdicional, localDate)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

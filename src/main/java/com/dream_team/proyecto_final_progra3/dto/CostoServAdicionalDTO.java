@@ -4,14 +4,14 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CostoServAdicionalDTO {
     private Long id;
-    private String nombreServicioAdicional;
-    private Integer cantidad;
-    private LocalDate fechaConsumo;
+    private ServicioDTO nombreServicioAdicional;
     private Double precioUnitario;
-    private Double precioTotal;
+
+
 }

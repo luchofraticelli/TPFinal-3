@@ -20,15 +20,5 @@ public class CostoServicio {
 
     private Double costo;
 
-    public Long getId() {
-        return id;
-    }
 
-    public ServicioEnum getNombre() {
-        return nombre;
-    }
-
-    public Double getCosto() {
-        return costo;
-    }
 }

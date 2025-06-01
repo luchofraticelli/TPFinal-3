@@ -25,8 +25,6 @@ public class ReservaService {
     }
 
     @Autowired
-    private ConsumoServAdicionalService consumoServAdicionalService;
-    @Autowired
     private CostoServAdicionalService costoServAdicionalService;
     @Autowired
     private HabitacionService habitacionService;
@@ -69,87 +67,6 @@ public class ReservaService {
     }
 
 
-    public FacturacionDTO calcularFactura(Long reservaId) {
-        Reserva reserva = reservaRepository.findById(reservaId)
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
-        Habitacion habitacion = reserva.getHabitacion();
 
-        // 1. Precio base de la habitación
-        Double precioBase = costoHabitacionService
-                .findByTipoHabitacion(habitacion.getTipoHabitacion())
-                .orElseThrow(() -> new RuntimeException("No hay precio base para este tipo de habitación"))
-                .getCosto();
-
-        // 2. Servicios fijos activos de la habitación (consultando cada precio en BD)
-        List<ServicioDTO> serviciosHabitacion = habitacion.getServicios().entrySet().stream()
-                .filter(Map.Entry::getValue)
-                .map(entry -> {
-                    ServicioEnum servicioEnum = entry.getKey();
-                    Double costo = costoServicioRepository.findByNombre(servicioEnum)
-                            .map(CostoServicio::getCosto)
-                            .orElseThrow(() -> new RuntimeException("No hay precio cargado para el servicio fijo: " + servicioEnum.name()));
-                    return new ServicioDTO(null, servicioEnum.name(), costo);
-                })
-                .toList();
-
-        Double totalServiciosHabitacion = serviciosHabitacion.stream()
-                .mapToDouble(ServicioDTO::getCosto)
-                .sum();
-
-        // 3. Consumos de servicios adicionales y sus precios históricos
-        List<ConsumoServAdicional> consumos = consumoServAdicionalService.findByReservaId(reservaId);
-
-        List<ConsumoServAdicionalDTO> serviciosAdicionales = consumos.stream()
-                .map(consumo -> {
-                    var adicional = consumo.getServAdicional();
-                    var fecha = consumo.getFechaConsumo();
-                    var cantidad = consumo.getCantidad() != null ? consumo.getCantidad() : 1;
-                    var costo = costoServAdicionalService.findVigente(adicional, fecha)
-                            .orElseThrow(() -> new RuntimeException("No hay precio vigente para " +
-                                    (adicional.getNombre() instanceof Enum ? adicional.getNombre().name() : adicional.getNombre()) +
-                                    " en la fecha " + fecha));
-                    Double precioUnitario = costo.getPrecio();
-                    Double precioTotal = precioUnitario * cantidad;
-                    String nombre = (adicional.getNombre() instanceof Enum)
-                            ? ((Enum<?>) adicional.getNombre()).name()
-                            : String.valueOf(adicional.getNombre());
-                    return new ConsumoServAdicionalDTO(
-                            adicional.getId(),
-                            nombre,
-                            cantidad,
-                            fecha,
-                            precioUnitario,
-                            precioTotal
-                    );
-                })
-                .toList();
-
-        Double totalServiciosAdicionales = serviciosAdicionales.stream()
-                .mapToDouble(ConsumoServAdicionalDTO::getPrecioTotal)
-                .sum();
-
-        // 4. Cálculo de días de estadía (mínimo 1 día)
-        long dias = ChronoUnit.DAYS.between(reserva.getFechaInicio(), reserva.getFechaFin());
-        if (dias <= 0) dias = 1;
-
-        // 5. Subtotal y total
-        Double subtotal = precioBase + totalServiciosHabitacion + totalServiciosAdicionales;
-        Double total = subtotal * dias;
-
-        // 6. Retornar el DTO final
-        return new FacturacionDTO(
-                reserva.getId(),
-                habitacion.getNumeroHabitacion(),
-                habitacion.getTipoHabitacion().name(),
-                (int) dias,
-                precioBase,
-                serviciosHabitacion,
-                serviciosAdicionales,
-                subtotal,
-                total
-        );
-
-
-    }
 }
 

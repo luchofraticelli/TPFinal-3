@@ -10,7 +10,9 @@ import lombok.*;
 @NoArgsConstructor
 public class ServicioDTO {
 
-      private Long id;
+    private Long id;
     private String nombre;
     private Double costo;
+
+
 }

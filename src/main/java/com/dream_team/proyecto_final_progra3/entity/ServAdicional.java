@@ -21,21 +21,8 @@ import lombok.*;
         @Enumerated (EnumType.STRING)
         @Column (name = "nombre", nullable = false, unique = true)
         private ServAdicionalEnum nombre;
-
         private String descripcion;
 
-    public ServAdicionalEnum getNombre() {
-        return nombre;
-    }
-    public void setNombre(ServAdicionalEnum nombre) {
-        this.nombre = nombre;
-    }
-    public String getDescripcion() {
-        return descripcion;
-    }
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
 
 
 }

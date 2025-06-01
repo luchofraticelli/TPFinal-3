@@ -1,13 +1,14 @@
 package com.dream_team.proyecto_final_progra3.entity;
 
 import com.dream_team.proyecto_final_progra3.entity.enums.EstadoReserva;
+import com.dream_team.proyecto_final_progra3.entity.enums.ServAdicionalEnum;
+import com.dream_team.proyecto_final_progra3.entity.enums.ServicioEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "reservas")
@@ -39,44 +40,16 @@ public class Reserva {
     @Enumerated(EnumType.STRING)
     private EstadoReserva estado;
 
-    @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ConsumoServAdicional> consumosServiciosAdicionales = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(
+            name = "reserva_serv_adicional_cantidad",
+            joinColumns = @JoinColumn(name = "reserva_id")
+    )
+    @MapKeyJoinColumn(name = "costo_serv_adicional_id")
+    @Column(name = "cantidad")
+    private Map<CostoServAdicional, Integer> serviciosAdicionalesConCantidad = new HashMap<>();
 
     private String observaciones;
 
-    public Long getId() {
-        return id;
-    }
 
-    public Pasajero getPasajero() {
-        return pasajero;
-    }
-
-    public Empleado getEmpleado() {
-        return empleado;
-    }
-
-    public Habitacion getHabitacion() {
-        return habitacion;
-    }
-
-    public LocalDate getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public LocalDate getFechaFin() {
-        return fechaFin;
-    }
-
-    public EstadoReserva getEstado() {
-        return estado;
-    }
-
-    public List<ConsumoServAdicional> getConsumosServiciosAdicionales() {
-        return consumosServiciosAdicionales;
-    }
-
-    public String getObservaciones() {
-        return observaciones;
-    }
 }

@@ -1,5 +1,6 @@
 package com.dream_team.proyecto_final_progra3.entity;
 
+import com.dream_team.proyecto_final_progra3.entity.enums.ServAdicionalEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,21 +13,17 @@ import java.time.LocalDate;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table (name = "servicios adicionales")
 public class CostoServAdicional {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "Servicios_Adicionales_id")
-    private ServAdicional servAdicional;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, unique = true)
+    private ServAdicionalEnum nombre;
 
     @Column(nullable = false)
     private Double precio;
 
-    @Column(nullable = false)
-    private LocalDate fechaDesde;
-
-    @Column(nullable = false)
-    private LocalDate fechaHasta;
-}
+   }
